@@ -1,6 +1,7 @@
 # terragrunt
 Demo terragrunt project
-
+---
+```
 meu-projeto/
 ├── terragrunt.hcl                    # Configuração raiz
 ├── dev/                               # Ambiente de desenvolvimento
@@ -17,19 +18,19 @@ meu-projeto/
     │   └── main.tf
     └── ec2-instance/
         └── main.tf
-
-
+```
 
 ## Como Executar
 
-## 1. Configure suas credenciais AWS:
-bash
+1. **Configure suas credenciais AWS:**
+```bash
 export AWS_ACCESS_KEY_ID="sua-chave"
 export AWS_SECRET_ACCESS_KEY="seu-segredo"
 export AWS_DEFAULT_REGION="us-east-1"
+```
 
-## 2. Crie o bucket de estado (primeira vez apenas):
-bash
+2. **Crie o bucket de estado (primeira vez apenas):**
+```bash
 aws s3 mb s3://meu-projeto-terraform-state --region us-east-1
 aws dynamodb create-table \
     --table-name terraform-locks \
@@ -37,9 +38,10 @@ aws dynamodb create-table \
     --key-schema AttributeName=LockID,KeyType=HASH \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
     --region us-east-1
+```
 
-## 3. Execute para criar todos os recursos:
-bash
+3. **xecute para criar todos os recursos:**
+```bash
 # Navegue até o diretório do ambiente dev
 cd meu-projeto/dev
 
@@ -55,9 +57,10 @@ terragrunt apply
 
 cd ../ec2-metabase
 terragrunt apply
+```
 
-## 4. Comandos úteis:
-bash
+4. **Comandos úteis:**
+```bash
 # Ver o plano de todos os recursos
 terragrunt run-all plan
 
@@ -71,3 +74,4 @@ terragrunt run-all destroy
 # Destruir apenas um recurso
 cd resources/ec2-metabase
 terragrunt destroy        
+```
