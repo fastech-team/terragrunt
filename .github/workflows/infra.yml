@@ -1,0 +1,45 @@
+name: Infra CI/CD
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+
+jobs:
+  terragrunt:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: live/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup Terragrunt
+        run: |
+          curl -L https://github.com/gruntwork-io/terragrunt/releases/latest/download/terragrunt_linux_amd64 -o terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/
+
+      - name: Configure AWS
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+
+      - name: Terragrunt Init
+        run: terragrunt run-all init
+
+      - name: Terragrunt Plan
+        if: github.event_name == 'pull_request'
+        run: terragrunt run-all plan
+
+      - name: Terragrunt Apply
+        if: github.ref == 'refs/heads/main'
+        run: terragrunt run-all apply -auto-approve

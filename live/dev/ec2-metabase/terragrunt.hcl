@@ -6,11 +6,15 @@ include "dev" {
 }
 
 terraform {
-  source = "../../../modules/ec2-instance"
+  source = "../../../modules/ec2"
+}
+
+dependency "network" {
+  config_path = "../network"
 }
 
 inputs = {
-  instance_name = "metabase-dev-${include.dev.locals.unique_id}"
+  instance_name = "metabase-dev"
   instance_type = "t3.medium"
   environment   = include.dev.locals.environment
   tags = merge(include.dev.inputs.tags, {
@@ -18,4 +22,5 @@ inputs = {
     Application = "Metabase"
     AutoOff     = "true"
   })
+  subnet_id = dependency.network.outputs.subnet_id
 }

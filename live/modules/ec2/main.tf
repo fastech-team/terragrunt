@@ -87,6 +87,7 @@ resource "aws_instance" "this" {
   instance_type          = var.instance_type
   key_name               = aws_key_pair.this.key_name
   vpc_security_group_ids = [aws_security_group.this.id]
+  subnet_id              = var.subnet_id
 
   # User data para instalar Docker e Metabase
   user_data = <<-EOF

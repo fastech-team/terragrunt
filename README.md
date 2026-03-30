@@ -2,21 +2,22 @@
 Demo terragrunt project
 ---
 ```
-meu-projeto/
+live/
 ├── terragrunt.hcl                    # Configuração raiz
-├── dev/                               # Ambiente de desenvolvimento
+├── dev/                              # Ambiente de desenvolvimento
 │   ├── terragrunt.hcl                # Configuração específica do dev
-│   └── resources/
-│       ├── s3-bucket01/
-│       │   └── terragrunt.hcl
-│       ├── s3-bucket02/
-│       │   └── terragrunt.hcl
-│       └── ec2-metabase/
-│           └── terragrunt.hcl
+│   ├── network/
+│   │   └── terragrunt.hcl
+│   ├── s3/
+│   │   └── terragrunt.hcl
+│   └── ec2/
+│       └── terragrunt.hcl
 └── modules/                           # Módulos Terraform reutilizáveis
-    ├── s3-bucket/
+    ├── vpc/
     │   └── main.tf
-    └── ec2-instance/
+    ├── s3/
+    │   └── main.tf
+    └── ec2/
         └── main.tf
 ```
 

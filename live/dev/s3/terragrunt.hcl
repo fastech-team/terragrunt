@@ -6,11 +6,11 @@ include "dev" {
 }
 
 terraform {
-  source = "../../../modules/s3-bucket"
+  source = "../../../modules/s3"
 }
 
 inputs = {
-  bucket_name = "mybucket01-${include.dev.locals.unique_id}"
+  bucket_name = "mybucket01"
   environment = include.dev.locals.environment
   tags = merge(include.dev.inputs.tags, {
     Name        = "mybucket01"
