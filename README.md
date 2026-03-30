@@ -2,23 +2,27 @@
 Demo terragrunt project
 ---
 ```
-live/
-├── terragrunt.hcl                    # Configuração raiz
-├── dev/                              # Ambiente de desenvolvimento
-│   ├── terragrunt.hcl                # Configuração específica do dev
-│   ├── network/
-│   │   └── terragrunt.hcl
-│   ├── s3/
-│   │   └── terragrunt.hcl
-│   └── ec2/
-│       └── terragrunt.hcl
-└── modules/                           # Módulos Terraform reutilizáveis
-    ├── vpc/
-    │   └── main.tf
-    ├── s3/
-    │   └── main.tf
-    └── ec2/
-        └── main.tf
+repo/
+└── .github/
+│    └── workflows/
+│        └── infra.yml
+└── live/
+    ├── terragrunt.hcl                    # Configuração raiz
+    ├── dev/                              # Ambiente de desenvolvimento
+    │   ├── terragrunt.hcl                # Configuração específica do dev
+    │   ├── network/
+    │   │   └── terragrunt.hcl
+    │   ├── s3/
+    │   │   └── terragrunt.hcl
+    │   └── ec2/
+    │       └── terragrunt.hcl
+    └── modules/                           # Módulos Terraform reutilizáveis
+        ├── vpc/
+        │   └── main.tf
+        ├── s3/
+        │   └── main.tf
+        └── ec2/
+            └── main.tf
 ```
 
 ## Como Executar
