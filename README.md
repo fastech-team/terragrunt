@@ -3,7 +3,7 @@ Demo terragrunt project
 ---
 ```
 repo/
-└── .github/
+├── .github/
 │    └── workflows/
 │        └── infra.yml
 └── live/
