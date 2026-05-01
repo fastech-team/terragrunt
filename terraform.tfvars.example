@@ -1,0 +1,60 @@
+# Exemplo de arquivo terraform.tfvars
+# Copie este arquivo para terraform.tfvars e preencha com seus valores
+
+# Configurações AWS
+aws_region  = "us-east-1"
+aws_profile = "develop"
+
+# Configurações VPC
+vpc_cidr                = "10.0.0.0/16"
+public_subnet_cidrs     = ["10.0.101.0/24", "10.0.102.0/24"]
+private_subnet_cidrs    = ["10.0.1.0/24", "10.0.2.0/24"]
+enable_nat_gateway      = true
+enable_dns_hostnames    = true
+enable_dns_support      = true
+
+# Configurações EC2
+instance_name           = "metabase-dev"
+instance_type           = "t3.medium"
+associate_public_ip     = false
+root_volume_size        = 20
+root_volume_type        = "gp3"
+
+# Configurações S3
+bucket_name             = "my-project-data-dev"
+versioning_enabled      = true
+block_public_acls       = true
+block_public_policy     = true
+ignore_public_acls      = true
+restrict_public_buckets = true
+enable_server_side_encryption = true
+encryption_algorithm    = "AES256"
+
+# Configurações ECS
+cluster_name            = "mycluster-dev"
+capacity_providers      = ["FARGATE", "FARGATE_SPOT"]
+enable_container_insights = false
+log_group_retention_days = 7
+
+# Configurações RDS
+db_identifier           = "mydb-dev"
+db_name                 = "myappdb"
+engine                  = "postgres"
+engine_version          = "14"
+instance_class          = "db.t3.micro"
+allocated_storage       = 20
+max_allocated_storage   = 100
+# username               = "admin"
+# password               = "GeneratedSecurePassword123!" # NUNCA COMITE ISSO!
+multi_az                = false
+publicly_accessible     = false
+backup_retention_period = 7
+
+# Tags globais
+tags = {
+  Project     = "MyProject"
+  Environment = "dev"
+  Team        = "Infrastructure"
+  CostCenter  = "Engineering"
+  ManagedBy   = "Terraform"
+}

@@ -1,0 +1,44 @@
+# Terraform/Terragrunt files
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terragrunt files
+.terragrunt-cache/
+**/terragrunt-debug*.log
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+*.iml
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local development
+.env
+.env.local
+*.pem
+*.pub
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+logs/
