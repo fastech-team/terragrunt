@@ -41,6 +41,19 @@ remote_state {
   }
 }
 
+terraform {
+  before_hook "before_hook" {
+    commands     = ["apply", "plan"]
+    execute      = ["echo", "Running OpenTofu"]
+  }
+
+  after_hook "after_hook" {
+    commands     = ["apply", "plan"]
+    execute      = ["echo", "Finished running OpenTofu"]
+    run_on_error = true
+  }
+}
+
 inputs = merge(
   local.account_vars.locals,
   local.region_vars.locals,
