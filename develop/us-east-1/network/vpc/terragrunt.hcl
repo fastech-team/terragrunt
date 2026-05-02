@@ -1,6 +1,6 @@
 # Inclui configuração raiz
 include "root" {
-  path = find_in_parent_folders("root-terragrunt.hcl")
+  path = find_in_parent_folders("root.hcl")
 }
 
 # Inclui configuração do ambiente

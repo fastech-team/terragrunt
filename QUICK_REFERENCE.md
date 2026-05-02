@@ -17,30 +17,27 @@ terragrunt/
 │   ├── .gitignore                   ← Segurança de repos
 │   └── validate.sh                  ← Script de validação
 │
-├── 📂 live/ (Terragrunt configs)
-│   ├── root-terragrunt.hcl          ← Configuração global
-│   │
-│   └── develop/
-│       ├── account.hcl              ✅ CORRIGIDO: "develop"
-│       ├── environment.hcl          ✅ CORRIGIDO: include "environment"
-│       │
+├── 🌍 AMBIENTES
+│   ├── develop/                     ← Ambiente de desenvolvimento
+│   │   ├── account.hcl              ✅ Conta AWS dev
+│   │   ├── environment.hcl          ✅ Config dev
+│   │   └── us-east-1/
+│   │       ├── region.hcl
+│   │       ├── compute/ec2-metabase/terragrunt.hcl ✅
+│   │       ├── containers/ecs/terragrunt.hcl       ✅
+│   │       ├── database/rds/terragrunt.hcl         ✅
+│   │       ├── network/vpc/terragrunt.hcl          ✅
+│   │       └── storage/s3/terragrunt.hcl           ✅
+│   └── prod/                        ← Ambiente de produção
+│       ├── account.hcl              ✅ Conta AWS prod
+│       ├── environment.hcl          ✅ Config prod
 │       └── us-east-1/
 │           ├── region.hcl
-│           ├── compute/
-│           │   └── ec2-metabase/
-│           │       └── terragrunt.hcl ✅ CORRIGIDO
-│           ├── containers/
-│           │   └── ecs/
-│           │       └── terragrunt.hcl ✅ CORRIGIDO
-│           ├── database/
-│           │   └── rds/
-│           │       └── terragrunt.hcl ✅ CORRIGIDO
-│           ├── network/
-│           │   └── vpc/
-│           │       └── terragrunt.hcl ✅ CORRIGIDO
-│           └── storage/
-│               └── s3/
-│                   └── terragrunt.hcl ✅ CORRIGIDO
+│           ├── compute/ec2-metabase/terragrunt.hcl ✅
+│           ├── containers/ecs/terragrunt.hcl       ✅
+│           ├── database/rds/terragrunt.hcl         ✅
+│           ├── network/vpc/terragrunt.hcl          ✅
+│           └── storage/s3/terragrunt.hcl           ✅
 │
 └── 🧩 modules/ (Terraform modules)
     ├── ec2/
@@ -97,13 +94,13 @@ cp terraform.tfvars.example terraform.tfvars
 bash validate.sh
 
 # Ou manualmente
-cd live/develop
+cd develop
 terragrunt validate-all
 ```
 
 ### 3️⃣ Planejamento
 ```bash
-cd live/develop
+cd develop
 
 # Plan tudo
 terragrunt plan-all
@@ -115,7 +112,7 @@ terragrunt plan
 
 ### 4️⃣ Aplicar
 ```bash
-cd live/develop
+cd develop
 
 # Apply tudo
 terragrunt apply-all
@@ -205,11 +202,11 @@ Outputs: db_instance_id, db_instance_endpoint, db_instance_arn
 ### Adicionar Novo Módulo
 1. Criar diretório em `modules/novo-modulo/`
 2. Criar `variables.tf`, `main.tf`, `outputs.tf`, `README.md`
-3. Adicionar block em `live/develop/us-east-1/servico/terragrunt.hcl`
+3. Adicionar block em `develop/us-east-1/servico/terragrunt.hcl`
 4. Incluir dependências se necessário
 
 ### Adicionar Novo Ambiente
-1. Copiar `live/develop/` para `live/prod/`
+1. Copiar `develop/` para `prod/`
 2. Editar `account.hcl` com AWS account ID
 3. Editar `environment.hcl` com settings de prod
 4. Executar `terragrunt apply-all`
@@ -223,9 +220,9 @@ Outputs: db_instance_id, db_instance_endpoint, db_instance_arn
 4. Execute `terragrunt plan-all` (não aplique)
 
 ### Para Intermediários
-1. Modifique variáveis em `live/develop/environment.hcl`
+1. Modifique variáveis em `develop/environment.hcl`
 2. Crie novo módulo simples
-3. Estude `live/root-terragrunt.hcl`
+3. Estude `root.hcl`
 4. Implemente dependency chain
 
 ### Para Avançados

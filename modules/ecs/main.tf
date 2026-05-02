@@ -12,6 +12,11 @@ terraform {
 resource "aws_ecs_cluster" "this" {
   name = var.cluster_name
 
+  setting {
+    name  = "containerInsights"
+    value = var.enable_container_insights ? "enabled" : "disabled"
+  }
+
   tags = merge(
     var.tags,
     {
@@ -28,12 +33,14 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 
   capacity_providers = var.capacity_providers
 
-  default_capacity_provider_strategy {
-    for_each = { for s in var.default_capacity_provider_strategy : s.capacity_provider => s }
+  dynamic "default_capacity_provider_strategy" {
+    for_each = var.default_capacity_provider_strategy
 
-    capacity_provider = each.key
-    weight            = each.value.weight
-    base              = each.value.base
+    content {
+      capacity_provider = default_capacity_provider_strategy.value.capacity_provider
+      weight            = default_capacity_provider_strategy.value.weight
+      base              = default_capacity_provider_strategy.value.base
+    }
   }
 }
 
@@ -50,14 +57,6 @@ resource "aws_cloudwatch_log_group" "ecs_logs" {
       ManagedBy   = "Terraform"
     }
   )
-}
-
-# ECS Cluster Settings (Container Insights)
-resource "aws_ecs_cluster_setting" "container_insights" {
-  count           = var.enable_container_insights ? 1 : 0
-  name            = "containerInsights"
-  value           = "enabled"
-  cluster_name    = aws_ecs_cluster.this.name
 }
 
 # IAM Role para ECS Task Execution

@@ -2,6 +2,24 @@
 
 Histórico de mudanças do projeto de infraestrutura.
 
+## [1.1.0] - 2024-05-02
+
+### Mudanças Estruturais
+- **Migração para padrão infrastructure-live**: Removida pasta `live/` separada
+- **Estrutura plana**: Ambientes `develop/` e `prod/` diretamente na raiz
+- **Arquivo raiz**: Renomeado `root-terragrunt.hcl` → `root.hcl`
+- **Referências corrigidas**: Todos os `terragrunt.hcl` atualizados para usar `root.hcl`
+
+### Corrigido
+- Referências quebradas em todos os arquivos terragrunt.hcl (develop e prod)
+- Paths de include atualizados para nova estrutura
+- Dependências mantidas funcionais
+
+### Documentação
+- **README.md**: Estrutura atualizada para refletir mudanças
+- **QUICK_REFERENCE.md**: Mapa visual atualizado
+- **SUMMARY.md**: Resumo das mudanças estruturais
+
 ## [1.0.0] - 2024-05-01
 
 ### Adicionado

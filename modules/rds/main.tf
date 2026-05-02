@@ -31,13 +31,12 @@ resource "aws_db_instance" "this" {
   maintenance_window     = var.maintenance_window
 
   storage_encrypted             = true
-  enable_cloudwatch_logs_exports = var.enable_cloudwatch_logs_exports
+  enabled_cloudwatch_logs_exports = var.enable_cloudwatch_logs_exports
 
   skip_final_snapshot       = var.skip_final_snapshot
   final_snapshot_identifier = var.skip_final_snapshot ? null : "${var.db_identifier}-final-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"
 
   deletion_protection = var.environment == "prod" ? true : false
-  enabled_cloudwatch_logs_exports = var.enable_cloudwatch_logs_exports
 
   tags = merge(
     var.tags,

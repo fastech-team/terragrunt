@@ -9,28 +9,53 @@ terragrunt/
 ├── README.md                     # Este arquivo
 ├── BEST_PRACTICES.md            # Guia de boas práticas
 ├── CHANGELOG.md                 # Histórico de mudanças
-├── live/                        # Configurações Terragrunt
-│   ├── root-terragrunt.hcl      # Configuração raiz global
-│   └── develop/
-│       ├── account.hcl          # Variáveis de conta AWS
-│       ├── environment.hcl      # Variáveis de ambiente
-│       └── us-east-1/
-│           ├── region.hcl       # Variáveis de região
-│           ├── compute/
-│           │   └── ec2-metabase/
-│           │       └── terragrunt.hcl
-│           ├── containers/
-│           │   └── ecs/
-│           │       └── terragrunt.hcl
-│           ├── database/
-│           │   └── rds/
-│           │       └── terragrunt.hcl
-│           ├── network/
-│           │   └── vpc/
-│           │       └── terragrunt.hcl
-│           └── storage/
-│               └── s3/
-│                   └── terragrunt.hcl
+├── PRODUCTION_GUIDE.md          # Guia de produção
+├── QUICK_REFERENCE.md           # Mapa de referência rápida
+├── SUMMARY.md                   # Resumo de melhorias
+├── root.hcl                     # Configuração raiz global
+├── terraform.tfvars.example     # Exemplo de configuração
+├── validate.sh                  # Script de validação
+├── .gitignore                   # Arquivos ignorados
+├── develop/                     # Ambiente de desenvolvimento
+│   ├── account.hcl              # Variáveis de conta AWS
+│   ├── environment.hcl          # Variáveis de ambiente
+│   └── us-east-1/
+│       ├── region.hcl           # Variáveis de região
+│       ├── compute/
+│       │   └── ec2-metabase/
+│       │       └── terragrunt.hcl
+│       ├── containers/
+│       │   └── ecs/
+│       │       └── terragrunt.hcl
+│       ├── database/
+│       │   └── rds/
+│       │       └── terragrunt.hcl
+│       ├── network/
+│       │   └── vpc/
+│       │       └── terragrunt.hcl
+│       └── storage/
+│           └── s3/
+│               └── terragrunt.hcl
+├── prod/                        # Ambiente de produção
+│   ├── account.hcl              # Variáveis de conta AWS (prod)
+│   ├── environment.hcl          # Variáveis de ambiente (prod)
+│   └── us-east-1/
+│       ├── region.hcl           # Variáveis de região
+│       ├── compute/
+│       │   └── ec2-metabase/
+│       │       └── terragrunt.hcl
+│       ├── containers/
+│       │   └── ecs/
+│       │       └── terragrunt.hcl
+│       ├── database/
+│       │   └── rds/
+│       │       └── terragrunt.hcl
+│       ├── network/
+│       │   └── vpc/
+│       │       └── terragrunt.hcl
+│       └── storage/
+│           └── s3/
+│               └── terragrunt.hcl
 └── modules/                     # Módulos Terraform reutilizáveis
     ├── ec2/
     │   ├── variables.tf
@@ -48,6 +73,16 @@ terragrunt/
     │   ├── outputs.tf
     │   └── README.md
     ├── ecs/
+    │   ├── variables.tf
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   └── README.md
+    └── rds/
+        ├── variables.tf
+        ├── main.tf
+        ├── outputs.tf
+        └── README.md
+```
     │   ├── variables.tf
     │   ├── main.tf
     │   ├── outputs.tf
@@ -102,41 +137,41 @@ terragrunt/
 
 ### 1. Configure Credenciais AWS
 
-```bash
-export AWS_PROFILE=develop
-export AWS_REGION=us-east-1
+```develop/us-east-1/network/vpc
+terragrunt init
 ```
 
-Ou use `~/.aws/credentials`:
-```
-[develop]
-aws_access_key_id = YOUR_ACCESS_KEY
-aws_secret_access_key = YOUR_SECRET_KEY
-region = us-east-1
-```
-
-### 2. Crie o Bucket de Estado S3 (primeira vez apenas)
+### Validar Configuração
 
 ```bash
-aws s3 mb s3://terragrunt-example-tf-state-develop-us-east-1 --region us-east-1
+cd develop
+terragrunt validate-all
 ```
 
-### 3. Configure o Banco de Dados para Locking (opcional)
+### Planejar Deploy (dry-run)
 
 ```bash
-aws dynamodb create-table \
-    --table-name terraform-locks \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-    --region us-east-1
+cd develop
+terragrunt plan-all
 ```
 
-## 📖 Como Usar
-
-### Inicializar
+### Aplicar Configuração
 
 ```bash
+cd develop/us-east-1/network/vpc
+terragrunt apply
+```
+
+Para aplicar tudo:
+```bash
+cd develop
+terragrunt apply-all
+```
+
+### Destruir Recursos
+
+```bash
+cd 
 cd live/develop/us-east-1/network/vpc
 terragrunt init
 ```
