@@ -2,7 +2,7 @@
 
 # Configurações específicas do ambiente dev
 locals {
-  environment = "dev"
+  environment = "prod"
 }
 
 # Inputs que serão passados para todos os recursos do dev
