@@ -1,0 +1,4 @@
+- name: DOMAIN
+  value: "fastech.com"
+- name: URL_FRONT
+  value: "https://fastech.com"

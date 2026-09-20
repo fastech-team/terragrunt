@@ -1,0 +1,8 @@
+- name: LOG_LEVEL
+  value: "info"
+- name: ENDPOINT
+  value: "api-fastech.com"
+- name: CACHE_TTL
+  value: "300"
+- name: FEATURE_FLAG_NEW_CHECKOUT
+  value: "true"

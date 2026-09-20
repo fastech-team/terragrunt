@@ -1,0 +1,4 @@
+- name: LOG_LEVEL
+  value: "info"
+- name: ENDPOINT
+  value: "api-fastech.com"
