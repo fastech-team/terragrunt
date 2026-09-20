@@ -1,27 +1,33 @@
 terraform {
-  source = "tfr:///terraform-aws-modules/vpc/aws?version=6.6.1"
+  source = "../../../../modules/vpc"
 }
 
+# Inclui configuração raiz
 include "root" {
   path = find_in_parent_folders("root.hcl")
 }
+
+
 locals {
-  env_config = read_terragrunt_config(find_in_parent_folders("environment.hcl"))
+  environment = read_terragrunt_config(find_in_parent_folders("environment.hcl"))
+  account     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
+  region      = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 }
 
 inputs = {
-  name = "fastech"
-  cidr = "10.33.0.0/16"
-
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  private_subnets = ["10.33.0.0/20", "10.33.16.0/20", "10.33.32.0/20"]
-  public_subnets  = ["10.33.64.0/20", "10.33.80.0/20", "10.33.96.0/20"]
-
-  enable_nat_gateway = true
-  enable_vpn_gateway = true
-
-  tags = {
-    Terraform = "true"
-    Environment = "dev"
-  }
+    project_name = "fastech"
+    vpc_cidr = "10.50.0.0/16"
+    environment = local.environment.locals.environment
+    availability_zones = local.region.locals.availability_zones
+    private_subnet_cidrs = ["10.50.1.0/24", "10.50.2.0/24", "10.50.3.0/24"]
+    public_subnet_cidrs = ["10.50.10.0/24", "10.50.11.0/24", "10.50.12.0/24"]
+    enable_nat_gateway = true
+    enable_dns_hostnames = true
+    enable_dns_support = true
+    tags = {
+        CostCenter = "DevTeam"
+        AutoOff    = "true"
+        Project    = "Fastech"
+        Awner     = "Devops team"
+    }
 }

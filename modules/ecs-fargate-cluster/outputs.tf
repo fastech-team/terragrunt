@@ -25,7 +25,7 @@ output "log_group_arn" {
 
 output "ecs_task_execution_role_arn" {
   description = "ARN do IAM role de execução de tasks"
-  value       = aws_iam_role.ecs_task_execution_role.arn
+  value       = aws_iam_role.execution_role.arn
 }
 
 output "ecs_task_role_arn" {
@@ -50,5 +50,5 @@ output "aws_security_group_id" {
 
 output "capacity_providers" {
   description = "Capacity providers configurados"
-  value       = aws_ecs_cluster.cluster.capacity_providers
+  value       = aws_ecs_cluster_capacity_providers.providers.capacity_providers
 }
