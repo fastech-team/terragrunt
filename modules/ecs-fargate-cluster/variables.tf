@@ -82,6 +82,7 @@ variable "ingress_rules" {
     protocol     = string
     allowed_cidr = optional(string, "0.0.0.0/0")
   }))
+  default = {}
 }
 
 variable "domain" {

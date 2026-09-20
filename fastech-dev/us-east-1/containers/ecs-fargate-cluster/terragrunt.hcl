@@ -80,5 +80,5 @@ inputs = {
     }
   }
 
-  domain = "fastech.com"
+  domain = ""
 }

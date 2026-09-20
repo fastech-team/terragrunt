@@ -1,10 +1,17 @@
 terraform {
-  required_version = ">= 1.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
+  }
+}
+
+locals {
+  project_name = "${var.project_name}-${var.environment}"
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "Terraform"
   }
 }
 
@@ -16,10 +23,9 @@ resource "aws_vpc" "this" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "vpc-${var.environment}"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+      Name = "${local.project_name}-vpc"
     }
   )
 }
@@ -30,10 +36,9 @@ resource "aws_internet_gateway" "this" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "igw-${var.environment}"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+      Name = "igw-${local.project_name}"
     }
   )
 }
@@ -48,11 +53,10 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "public-subnet-${count.index + 1}"
-      Environment = var.environment
-      Type        = "Public"
-      ManagedBy   = "Terraform"
+      Name = "public-subnet-${local.project_name}-${count.index + 1}"
+      Type = "Public"
     }
   )
 }
@@ -66,11 +70,10 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "private-subnet-${count.index + 1}"
-      Environment = var.environment
-      Type        = "Private"
-      ManagedBy   = "Terraform"
+      Name = "private-subnet-${local.project_name}-${count.index + 1}"
+      Type = "Private"
     }
   )
 }
@@ -82,10 +85,9 @@ resource "aws_eip" "nat" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "eip-nat-${count.index + 1}"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+      Name = "eip-nat-${local.project_name}-${count.index + 1}"
     }
   )
 
@@ -100,10 +102,9 @@ resource "aws_nat_gateway" "this" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "nat-${count.index + 1}"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+      Name = "nat-${local.project_name}-${count.index + 1}"
     }
   )
 
@@ -121,11 +122,10 @@ resource "aws_route_table" "public" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "rt-public"
-      Environment = var.environment
-      Type        = "Public"
-      ManagedBy   = "Terraform"
+      Name = "rt-public-${local.project_name}"
+      Type = "Public"
     }
   )
 }
@@ -149,11 +149,10 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "rt-private-${count.index + 1}"
-      Environment = var.environment
-      Type        = "Private"
-      ManagedBy   = "Terraform"
+      Name = "rt-private-${local.project_name}-${count.index + 1}"
+      Type = "Private"
     }
   )
 }
@@ -192,10 +191,9 @@ resource "aws_network_acl" "main" {
 
   tags = merge(
     var.tags,
+    local.tags,
     {
-      Name        = "nacl-${var.environment}"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+      Name = "nacl-${local.project_name}"
     }
   )
 }

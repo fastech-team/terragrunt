@@ -224,6 +224,7 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 data "aws_acm_certificate" "cert" {
+  count    = var.domain != "" ? 1 : 0
   domain   = "*.${var.domain}"
   statuses = ["ISSUED"]
 }
