@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0"
+  # required_version = ">= 1.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -51,7 +51,7 @@ resource "aws_ecs_cluster_capacity_providers" "providers" {
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/ecs/${var.cluster_name}"
+  name              = "/ecs/cluster/${var.cluster_name}"
   retention_in_days = var.log_group_retention_days
 
   tags = merge(
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy" "execution_role_secrets" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["secretsmanager:GetSecretValue"]
-        Resource = "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${var.cluster_name}/${var.environment}/*"
+        Resource = "*"
     }]
   })
 }
@@ -219,10 +219,6 @@ resource "aws_vpc_security_group_ingress_rule" "ingress" {
 }
 
 ## DATA SOURCES ##
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
 data "aws_acm_certificate" "cert" {
   count    = var.domain != "" ? 1 : 0
   domain   = "*.${var.domain}"
