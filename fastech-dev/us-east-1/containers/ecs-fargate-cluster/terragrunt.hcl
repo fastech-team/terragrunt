@@ -35,11 +35,11 @@ terraform {
 
 inputs = {
   cluster_name = "fastech"
-  enable_container_insights = "enhanced"
+  enable_container_insights = "enabled"
   environment = local.env_config.locals.environment
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
   capacity_provider_strategy = {
-    capacity_provider = "FARGATE"
+    capacity_provider = "FARGATE_SPOT"
     weight            = 100
     base              = 1
   }

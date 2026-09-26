@@ -7,13 +7,17 @@ variable "enable_container_insights" {
   description = "Habilitar Container Insights: enabled, enhanced ou disabled"
   type        = string
   default     = "enabled"
+  validation {
+    condition     = contains(["enabled", "enhanced", "disabled"], var.enable_container_insights)
+    error_message = "enable_container_insights deve ser: enabled, enhanced ou disabled."
+  }
 }
 
 variable "environment" {
   description = "Ambiente de deployment"
   type        = string
   validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
+    condition     = contains(["dev", "stage", "prod"], var.environment)
     error_message = "Environment deve ser: dev, staging ou prod."
   }
 }
