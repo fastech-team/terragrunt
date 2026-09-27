@@ -32,28 +32,8 @@ locals {
   env_client_api   = yamldecode(file("${get_terragrunt_dir()}/env-vars/client-api.yaml"))
   env_client_worker = yamldecode(file("${get_terragrunt_dir()}/env-vars/client-worker.yaml"))
 
-  secret_arn = "arn:aws:secretsmanager:${local.region.locals.aws_region}:${local.account.locals.aws_account_id}:secret"
-  secret_config = yamldecode(file("${get_terragrunt_dir()}/secrets/secrets.yaml"))
-
-  task_secrets = {
-    for task_name, secret_names in local.secret_config.tasks : task_name => concat(
-      [
-        for secret_name in local.secret_config.global : {
-          name      = secret_name
-          valueFrom = "${local.secret_arn}:fastech/${local.environment.locals.environment}/global:${secret_name}::"
-        }
-      ],
-      [
-        for secret_name in secret_names : {
-          name      = secret_name
-          valueFrom = "${local.secret_arn}:fastech/${local.environment.locals.environment}/${task_name}:${secret_name}::"
-        }
-      ]
-    )
-  }
-
+  task_secrets = yamldecode(file("${get_terragrunt_dir()}/secrets/secrets.yaml"))
 }
-
 
 inputs = {
   image_tag = "latest"
@@ -97,6 +77,8 @@ inputs = {
     client-worker = concat(local.env_global, local.env_client_worker)
   }
 
-  task_secrets = local.task_secrets
+  global_secret_name = "fastech/${local.environment.locals.environment}/global"
+  global_secrets     = local.task_secrets.global
+  task_secrets       = local.task_secrets.tasks
 
 }
