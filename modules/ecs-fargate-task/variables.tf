@@ -50,14 +50,22 @@ variable "task_variables" {
   sensitive = true
 }
 
+variable "global_secret_name" {
+  description = "Nome da secret compartilhada por todas as tasks."
+  type        = string
+  default     = "global"
+}
+
+variable "global_secrets" {
+  description = "Mapa de variável de ambiente para chave JSON da secret global."
+  type        = map(string)
+  default     = {}
+}
+
 variable "task_secrets" {
-  description = "Mapa de secrets por task no formato esperado pelo ECS"
-  type = map(list(object({
-    name      = string
-    valueFrom = string
-  })))
-  default   = {}
-  sensitive = true
+  description = "Mapa por task de nome da variável de ambiente para chave JSON da secret de mesmo nome da task."
+  type        = map(map(string))
+  default     = {}
 }
 
 variable "log_retention_days" {

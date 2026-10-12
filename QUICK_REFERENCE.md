@@ -26,7 +26,7 @@ terragrunt/
 │   │       ├── compute/ec2-metabase/terragrunt.hcl ✅
 │   │       ├── containers/ecs/terragrunt.hcl       ✅
 │   │       ├── database/rds/terragrunt.hcl         ✅
-│   │       ├── network/vpc/terragrunt.hcl          ✅
+│   │       ├── networking/vpc/terragrunt.hcl       ✅
 │   │       └── storage/s3/terragrunt.hcl           ✅
 │   └── prod/                        ← Ambiente de produção
 │       ├── account.hcl              ✅ Conta AWS prod
@@ -36,7 +36,7 @@ terragrunt/
 │           ├── compute/ec2-metabase/terragrunt.hcl ✅
 │           ├── containers/ecs/terragrunt.hcl       ✅
 │           ├── database/rds/terragrunt.hcl         ✅
-│           ├── network/vpc/terragrunt.hcl          ✅
+│           ├── networking/vpc/terragrunt.hcl       ✅
 │           └── storage/s3/terragrunt.hcl           ✅
 │
 └── 🧩 modules/ (Terraform modules)
@@ -106,7 +106,7 @@ cd develop
 terragrunt plan-all
 
 # Ou por módulo
-cd us-east-1/network/vpc
+cd us-east-1/networking/vpc
 terragrunt plan
 ```
 

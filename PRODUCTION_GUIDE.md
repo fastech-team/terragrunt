@@ -53,7 +53,7 @@ live/
 │       ├── compute/
 │       ├── containers/
 │       ├── database/
-│       ├── network/
+│       ├── networking/
 │       └── storage/
 ├── staging/
 │   └── ...
@@ -118,11 +118,11 @@ include "environment" {
 }
 
 dependency "vpc" {
-  config_path = "../../network/vpc"
+  config_path = "../../networking/vpc"
 }
 
 dependency "security_group" {
-  config_path = "../../network/security-group-web"
+  config_path = "../../networking/security-group-web"
 }
 
 terraform {
@@ -165,11 +165,11 @@ include "environment" {
 }
 
 dependency "vpc" {
-  config_path = "../../network/vpc"
+  config_path = "../../networking/vpc"
 }
 
 dependency "security_group" {
-  config_path = "../../network/security-group-db"
+  config_path = "../../networking/security-group-db"
 }
 
 terraform {
@@ -345,7 +345,7 @@ terragrunt plan-all > plan.txt
 aws rds create-db-snapshot --db-instance-identifier mydb-prod
 
 # 2. Aplicar com cuidado
-cd live/prod/us-east-1/network/vpc
+cd live/prod/us-east-1/networking/vpc
 terragrunt apply  # Aplicar primeiro a VPC
 
 # 3. Depois ECS, RDS, etc

@@ -45,12 +45,13 @@ EOF
 resource "aws_ecs_task_definition" "task" {
   for_each = var.container_definitions
 
-  family             = each.key
-  network_mode       = "bridge"
-  cpu                = each.value.cpu
-  memory             = each.value.memory
-  execution_role_arn = data.aws_iam_role.execution_role.arn
-  task_role_arn      = data.aws_iam_role.ecs_task_role.arn
+  family                   = each.key
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = each.value.cpu
+  memory                   = each.value.memory
+  execution_role_arn       = data.aws_iam_role.execution_role.arn
+  task_role_arn            = data.aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([{
     name   = each.key
@@ -60,13 +61,21 @@ resource "aws_ecs_task_definition" "task" {
     portMappings = [
       {
         containerPort = each.value.container_port
-        hostPort      = 0
         protocol      = "tcp"
       }
     ]
-    essential        = true
-    environment      = lookup(var.task_variables, each.key, [])
-    secrets          = lookup(var.task_secrets, each.key, [])
+    essential   = true
+    environment = lookup(var.task_variables, each.key, [])
+    secrets = concat(
+      [for env_name, secret_key in var.global_secrets : {
+        name      = env_name
+        valueFrom = "${data.aws_secretsmanager_secret.global.arn}:${secret_key}::"
+      }],
+      [for env_name, secret_key in lookup(var.task_secrets, each.key, {}) : {
+        name      = env_name
+        valueFrom = "${data.aws_secretsmanager_secret.task[each.key].arn}:${secret_key}::"
+      }]
+    )
     environmentFiles = []
     mountPoints      = []
     volumesFrom      = []
@@ -81,6 +90,7 @@ resource "aws_ecs_task_definition" "task" {
       }
     }
   }])
+
 }
 
 resource "aws_cloudwatch_log_group" "log" {
@@ -100,6 +110,13 @@ resource "aws_ecs_service" "service" {
   desired_count        = each.value.desired_count
   force_new_deployment = true
 
+  network_configuration {
+    subnets          = var.subnets_id
+    security_groups  = [aws_security_group.task.id]
+    assign_public_ip = false
+  }
+  depends_on = [aws_lb_listener_rule.rule, aws_lb_listener_rule.internal_rule]
+
   deployment_circuit_breaker {
     enable   = true
     rollback = true
@@ -115,6 +132,33 @@ resource "aws_ecs_service" "service" {
     target_group_arn = aws_lb_target_group.internal_target_group[each.key].arn
     container_name   = each.key
     container_port   = each.value.container_port
+  }
+}
+
+resource "aws_security_group" "task" {
+  name_prefix = "${var.cluster_name}-ecs-tasks"
+  description = "Acesso dos ALBs as tasks nas portas 80 e 443"
+  vpc_id      = var.vpc_id
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = concat(tolist(data.aws_lb.alb.security_groups), tolist(data.aws_lb.internal_alb.security_groups))
+  }
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = concat(tolist(data.aws_lb.alb.security_groups), tolist(data.aws_lb.internal_alb.security_groups))
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -154,10 +198,10 @@ resource "aws_lb_listener_rule" "internal_rule" {
 resource "aws_lb_target_group" "target_group" {
   for_each = var.container_definitions
 
-  name        = "tg-${each.key}"
+  name_prefix = "tg-ext-${each.key}"
   port        = each.value.container_port
   protocol    = "HTTP"
-  target_type = "instance"
+  target_type = "ip"
   vpc_id      = var.vpc_id
   health_check {
     healthy_threshold   = "5"
@@ -177,10 +221,10 @@ resource "aws_lb_target_group" "target_group" {
 resource "aws_lb_target_group" "internal_target_group" {
   for_each = var.container_definitions
 
-  name        = "tg-${each.key}"
+  name_prefix = "tg-int-${each.key}"
   port        = each.value.container_port
   protocol    = "HTTP"
-  target_type = "instance"
+  target_type = "ip"
   vpc_id      = var.vpc_id
   health_check {
     healthy_threshold   = "5"
@@ -251,6 +295,15 @@ resource "aws_appautoscaling_policy" "ecs_policy_memory" {
 }
 
 ## DATA SOURCES ##
+data "aws_secretsmanager_secret" "global" {
+  name = var.global_secret_name
+}
+
+data "aws_secretsmanager_secret" "task" {
+  for_each = var.container_definitions
+  name     = each.key
+}
+
 data "aws_ecs_cluster" "cluster" {
   cluster_name = var.cluster_name
 }
@@ -281,5 +334,5 @@ data "aws_lb_listener" "internal_https" {
 }
 data "aws_ecr_repository" "repo" {
   for_each = var.container_definitions
-  name = "${var.registry}/${each.key}"
+  name     = "${var.registry}/${each.key}"
 }
