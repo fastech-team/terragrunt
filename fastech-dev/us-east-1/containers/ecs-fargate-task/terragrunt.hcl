@@ -7,7 +7,7 @@ include "root" {
 }
 
 dependency "vpc" {
-  config_path = "../../network/vpc"
+  config_path = "../../networking/vpc"
 
   mock_outputs = {
     vpc_id = "vpc-0123456789abcdef0"

@@ -30,7 +30,7 @@ terragrunt/
 │       ├── database/
 │       │   └── rds/
 │       │       └── terragrunt.hcl
-│       ├── network/
+│       ├── networking/
 │       │   └── vpc/
 │       │       └── terragrunt.hcl
 │       └── storage/
@@ -50,7 +50,7 @@ terragrunt/
 │       ├── database/
 │       │   └── rds/
 │       │       └── terragrunt.hcl
-│       ├── network/
+│       ├── networking/
 │       │   └── vpc/
 │       │       └── terragrunt.hcl
 │       └── storage/
@@ -137,7 +137,7 @@ terragrunt/
 
 ### 1. Configure Credenciais AWS
 
-```develop/us-east-1/network/vpc
+```develop/us-east-1/networking/vpc
 terragrunt init
 ```
 
@@ -158,7 +158,7 @@ terragrunt plan-all
 ### Aplicar Configuração
 
 ```bash
-cd develop/us-east-1/network/vpc
+cd develop/us-east-1/networking/vpc
 terragrunt apply
 ```
 
@@ -172,7 +172,7 @@ terragrunt apply-all
 
 ```bash
 cd 
-cd live/develop/us-east-1/network/vpc
+cd live/develop/us-east-1/networking/vpc
 terragrunt init
 ```
 
@@ -193,7 +193,7 @@ terragrunt plan-all
 ### Aplicar Configuração
 
 ```bash
-cd live/develop/us-east-1/network/vpc
+cd live/develop/us-east-1/networking/vpc
 terragrunt apply
 ```
 
@@ -281,7 +281,7 @@ inputs = {
 ### Ler Outputs
 
 ```bash
-cd live/develop/us-east-1/network/vpc
+cd live/develop/us-east-1/networking/vpc
 terragrunt output vpc_id
 ```
 

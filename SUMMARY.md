@@ -155,7 +155,7 @@ terragrunt/
 │           ├── compute/ec2-metabase/terragrunt.hcl    # ✅ CORRIGIDO
 │           ├── containers/ecs/terragrunt.hcl          # ✅ CORRIGIDO
 │           ├── database/rds/terragrunt.hcl            # ✅ CORRIGIDO
-│           ├── network/vpc/terragrunt.hcl             # ✅ CORRIGIDO
+│           ├── networking/vpc/terragrunt.hcl          # ✅ CORRIGIDO
 │           └── storage/s3/terragrunt.hcl              # ✅ CORRIGIDO
 └── modules/                     # 🧩 Módulos reutilizáveis
     ├── ec2/
@@ -235,7 +235,7 @@ terragrunt plan-all
 ### Teste de Módulo Individual
 ```bash
 # Testar VPC
-cd live/develop/us-east-1/network/vpc
+cd live/develop/us-east-1/networking/vpc
 terragrunt plan
 terragrunt apply
 
